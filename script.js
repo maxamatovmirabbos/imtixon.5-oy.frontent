@@ -1,76 +1,77 @@
-
-// Scroll Animation
-document.addEventListener('DOMContentLoaded', function() {
-    // Intersection Observer for fade-in animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, {
-        threshold: 0.1
+// Smooth scrolling for navigation links
+document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href');
+        const targetSection = document.querySelector(targetId);
+        targetSection.scrollIntoView({ behavior: 'smooth' });
     });
+});
 
-    // Add fade-in class to elements
-    const sections = document.querySelectorAll('section');
-    sections.forEach(section => {
-        section.classList.add('fade-in');
-        observer.observe(section);
-    });
+// Intersection Observer for scroll animations
+const observerOptions = {
+    threshold: 0.2,
+    rootMargin: '0px'
+};
 
-    // Smooth scroll for navigation
-    document.querySelectorAll('nav a').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            const target = document.getElementById(targetId);
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // Product hover animation
-    const productCards = document.querySelectorAll('.product-card');
-    productCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-10px)';
-        });
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
-
-    // Header scroll effect
-    let lastScroll = 0;
-    const header = document.querySelector('header');
-    
-    window.addEventListener('scroll', () => {
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll <= 0) {
-            header.style.boxShadow = 'none';
-        } else {
-            header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+            observer.unobserve(entry.target);
         }
+    });
+}, observerOptions);
+
+// Animate sections on scroll
+document.querySelectorAll('section').forEach(section => {
+    section.classList.add('fade-in');
+    observer.observe(section);
+});
+
+// Product card animations
+document.querySelectorAll('.product-card').forEach(card => {
+    observer.observe(card);
+});
+
+// Add to cart button animation
+document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', () => {
+        button.innerHTML = '✓ Added to Cart';
+        button.style.background = '#28a745';
         
-        lastScroll = currentScroll;
+        setTimeout(() => {
+            button.innerHTML = 'Add to Cart';
+            button.style.background = '';
+        }, 2000);
     });
 });
 
-// Cart functionality (basic)
-document.querySelector('.cart-icon').addEventListener('click', function() {
-    alert('Cart functionality will be implemented here');
+// Testimonial card hover effect
+document.querySelectorAll('.testimonial-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-10px)';
+        card.style.boxShadow = '0 10px 30px rgba(0,0,0,0.15)';
+    });
+
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0)';
+        card.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+    });
 });
 
-// Add to cart animation
-function addToCart(productId) {
-    const button = document.querySelector(`[data-product-id="${productId}"]`);
-    button.classList.add('added');
-    setTimeout(() => {
-        button.classList.remove('added');
-    }, 1500);
-}
+// Add CSS class for fade-in animations
+const style = document.createElement('style');
+style.textContent = `
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .animate {
+        opacity: 1;
+        transform: translateY(0);
+    }
+`;
+document.head.appendChild(style);   
