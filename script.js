@@ -1,3 +1,4 @@
+
 // Scroll Animation
 document.addEventListener('DOMContentLoaded', function() {
     // Intersection Observer for fade-in animations
